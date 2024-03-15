@@ -50,7 +50,7 @@ const ToDoList = () => {
   };
 
   return (
-    <div className="bg-black min-h-svh px-1 lg:px-96 md:px-32 py-6">
+    <div className="bg-black min-h-svh px-1 lg:px-80 md:px-32 py-6 ">
       <h1 className="text-white text-7xl text-center py-12">
         TO-<span className="text-blue-600">DO</span>
       </h1>
@@ -74,14 +74,21 @@ const ToDoList = () => {
       {lists.length > 0 ? (
         <div className="my-9 border-2 border-white rounded-md p-4">
           {lists.map((list, i) => (
-            <div key={i} className="flex justify-between items-center my-2">
-              <div className="flex items-center gap-2">
+            <div
+              key={i}
+              className="flex justify-between items-center my-2 gap-4"
+            >
+              <div className="flex items-center gap-2 ">
                 <input
                   type="checkbox"
                   className=" h-4 w-4 text-blue-600 "
                   onChange={(e) => handleChecked(e, i)}
                 />
-                <p id={`task${i}`} className="text-white text-xl">
+                <p
+                  id={`task${i}`}
+                  style={{ wordBreak: "break-word" }}
+                  className="text-white text-xl"
+                >
                   {list}
                 </p>
               </div>
