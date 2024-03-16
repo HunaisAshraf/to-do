@@ -1,32 +1,55 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const ToDoList = () => {
   const [lists, setLists] = useState([]);
   const [input, setInput] = useState("");
 
+  const validationRef = useRef();
+  const checkedRef = useRef();
+
   const handleChange = (e) => {
-    setInput((i) => (i = e.target.value));
+    setInput(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLists((l) => [...l, input]);
-    setInput("");
+    let taskExists;
+    for (let list of lists) {
+      if (list.task === input) {
+        taskExists = true;
+        break;
+      }
+    }
+
+    if (taskExists) {
+      validationRef.current.style.display = "block";
+    } else {
+      validationRef.current.style.display = "none";
+      let data = {
+        id: lists.length === 0 ? 1 : lists.length + 1,
+        task: input,
+        done: false,
+      };
+      setLists((l) => [...l, data]);
+      setInput("");
+    }
   };
 
   const handleDelete = (index) => {
-    setLists((l) => l.filter((elem, i) => i !== index));
+    setLists((l) => l.filter((elem, i) => elem.id !== index));
   };
 
-  const handleChecked = (e, i) => {
-    let elem = document.getElementById(`task${i}`);
-    if (e.target.checked) {
-      elem.style.textDecoration = "line-through";
-      elem.style.textDecorationColor = "#2563EB";
-      elem.style.textDecorationThickness = "2px";
-    } else {
-      elem.style.textDecoration = "none";
+  const handleChecked = (id) => {
+    let tempList = [...lists];
+
+    for (let list of tempList) {
+      if (list.id === id) {
+        list.done = !list.done;
+        break;
+      }
     }
+
+    setLists((l) => (l = tempList));
   };
 
   const moveDown = (i) => {
@@ -47,6 +70,13 @@ const ToDoList = () => {
       updatedList[i - 1] = temp;
       setLists(updatedList);
     }
+  };
+
+  const checkedStyle = {
+    textDecoration: "line-through",
+    textDecorationColor: "#2563EB",
+    textDecorationThickness: "2px",
+    wordBreak: "break-word",
   };
 
   return (
@@ -70,26 +100,34 @@ const ToDoList = () => {
             Add
           </button>
         </div>
+        <p
+          ref={validationRef}
+          style={{ display: "none" }}
+          className="text-3xl text-red-600 text-center mt-8"
+        >
+          Task Exists!!
+        </p>
       </form>
       {lists.length > 0 ? (
         <div className="my-9 border-2 border-white rounded-md p-4">
           {lists.map((list, i) => (
             <div
-              key={i}
+              key={list.id}
               className="flex justify-between items-center my-2 gap-4"
             >
               <div className="flex items-center gap-2 ">
                 <input
                   type="checkbox"
+                  checked={list.done}
                   className=" h-4 w-4 text-blue-600 "
-                  onChange={(e) => handleChecked(e, i)}
+                  onChange={() => handleChecked(list.id)}
                 />
                 <p
                   id={`task${i}`}
-                  style={{ wordBreak: "break-word" }}
+                  style={list.done ? checkedStyle : { wordBreak: "break-word" }}
                   className="text-white text-xl"
                 >
-                  {list}
+                  {list.task}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -101,7 +139,7 @@ const ToDoList = () => {
                 </button>
                 <button
                   className="border-none bg-blue-600 text-white w-24 p-2 rounded-sm"
-                  onClick={() => handleDelete(i)}
+                  onClick={() => handleDelete(list.id)}
                 >
                   Delete
                 </button>
