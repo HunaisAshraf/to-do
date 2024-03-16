@@ -5,7 +5,6 @@ const ToDoList = () => {
   const [input, setInput] = useState("");
 
   const validationRef = useRef();
-  const checkedRef = useRef();
 
   const handleChange = (e) => {
     setInput(e.target.value);
@@ -20,7 +19,6 @@ const ToDoList = () => {
         break;
       }
     }
-
     if (taskExists) {
       validationRef.current.style.display = "block";
     } else {
@@ -80,7 +78,7 @@ const ToDoList = () => {
   };
 
   return (
-    <div className="bg-black min-h-svh px-1 lg:px-80 md:px-32 py-6 ">
+    <div className="bg-black min-h-svh px-1 lg:px-80 md:px-32 py-2 ">
       <h1 className="text-white text-7xl text-center py-12">
         TO-<span className="text-blue-600">DO</span>
       </h1>
@@ -109,11 +107,11 @@ const ToDoList = () => {
         </p>
       </form>
       {lists.length > 0 ? (
-        <div className="my-9 border-2 border-white rounded-md p-4">
+        <div className="my-9 border-2 border-white rounded-md p-4 max-h-[400px] overflow-y-auto">
           {lists.map((list, i) => (
             <div
               key={list.id}
-              className="flex justify-between items-center my-2 gap-4"
+              className="flex justify-between items-center my-3 gap-4"
             >
               <div className="flex items-center gap-2 ">
                 <input
